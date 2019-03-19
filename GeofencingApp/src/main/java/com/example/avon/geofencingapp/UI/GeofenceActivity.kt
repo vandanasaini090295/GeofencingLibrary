@@ -1,34 +1,23 @@
 package com.example.avon.geofencingapp.UI
 
-import android.Manifest
-import android.app.Activity
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.TextView
-import android.widget.Toast
+import com.example.avon.geofencingapp.GeofenceUtils
 import com.example.avon.geofencingapp.Interface.NotificationInterface
 import com.example.avon.geofencingapp.R
 import com.example.avon.geofencingapp.Services.GeofenceTransitionService
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.MapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnSuccessListener
 
 /**
  * activity class for all the geofence creation purposes
@@ -63,7 +52,7 @@ class GeofenceActivity : AppCompatActivity(), NotificationInterface{
     private fun createGeofence(latLng : LatLng?, radius : Float) :  Geofence?{
         Log.d(TAG, "createGeofence()")
         var geofence : Geofence? = null
-                if(null != latLng) {
+        if(null != latLng) {
             geofence = Geofence.Builder()
                     .setCircularRegion(latLng.latitude, latLng.longitude, radius)
                     .setRequestId(GEOFENCE_REQ_ID)
@@ -148,6 +137,8 @@ class GeofenceActivity : AppCompatActivity(), NotificationInterface{
                         drawGeofence()
                     }
                     .addOnFailureListener {
+                        val errorMsg = GeofenceUtils()
+                        Log.d(TAG, errorMsg.getErrorString(this, it))
                     }
         }
     }

@@ -124,7 +124,6 @@ class MainActivity : AppCompatActivity(),
     override fun onConnected(p0: Bundle?) {
         Log.d(TAG, "onConnected()")
         getLastKnownLocation()
-        //geofenceActivity.recoverGeofenceMarker()
     }
 
     private fun getLastKnownLocation() {

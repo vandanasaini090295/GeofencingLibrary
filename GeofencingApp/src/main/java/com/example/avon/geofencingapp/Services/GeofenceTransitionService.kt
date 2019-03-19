@@ -7,43 +7,39 @@ import android.graphics.Color
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import android.util.Log
-import com.example.avon.geofencingapp.Interface.NotificationInterface
-import com.example.avon.geofencingapp.UI.GeofenceActivity
+import com.example.avon.geofencingapp.GeofenceUtils
 import com.example.avon.geofencingapp.R
 import com.google.android.gms.location.Geofence
-import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
 
 /**
  * This Service class handles the GeofenceEvent
  */
-class GeofenceTransitionService : IntentService(GeofenceTransitionService::class.simpleName) {
+abstract class GeofenceTransitionService : IntentService(GeofenceTransitionService::class.simpleName) {
 
     private val TAG = GeofenceTransitionService::class.java.simpleName
     private val GEOFENCE_NOTIFICATION_ID = 0
 
     override fun onHandleIntent(intent: Intent?) {
         // retrieve the geofencing event
-        var geofencingEvent = GeofencingEvent.fromIntent(intent)
+        val geofencingEvent = GeofencingEvent.fromIntent(intent)
 
         // handling errors
         if(geofencingEvent.hasError()){
-            var errorString = getErrorString(geofencingEvent.errorCode)
-            Log.d(TAG, errorString.toString())
+            val errorMsg = GeofenceUtils()
+            Log.d(TAG, errorMsg.getErrorString(this, geofencingEvent.errorCode))
             return
         }
 
         // retrieve geofence transition
-        var geofenceTransition = geofencingEvent.geofenceTransition
+        val geofenceTransition = geofencingEvent.geofenceTransition
         // check the transition type
         if (Geofence.GEOFENCE_TRANSITION_ENTER == geofenceTransition || Geofence.GEOFENCE_TRANSITION_EXIT == geofenceTransition ){
             // get the geofence that were triggered
-            var geofencesList = geofencingEvent.triggeringGeofences
+            val geofencesList = geofencingEvent.triggeringGeofences
 
             //create a detailed message with geofences recieved and sending notification details as a string
             sendNotification(getGeofenceTransitionDetails(geofencesList, geofenceTransition))
-
-
         }
     }
 
@@ -51,7 +47,7 @@ class GeofenceTransitionService : IntentService(GeofenceTransitionService::class
     // create a detail message with geofences received
     private fun getGeofenceTransitionDetails(geofencesList : List<Geofence>, geofenceTransition : Int) : String{
         //get the id of each geofence triggered
-        var triggerinGeofencesList = ArrayList<String>()
+        val triggerinGeofencesList = ArrayList<String>()
         for (geofence : Geofence in geofencesList){
             triggerinGeofencesList.add(geofence.requestId)
         }
@@ -67,16 +63,6 @@ class GeofenceTransitionService : IntentService(GeofenceTransitionService::class
         return status + TextUtils.join(" , ", triggerinGeofencesList)
     }
 
-    private fun getErrorString(errorCode : Int){
-        when(errorCode){
-            GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE -> getString(R.string.geofence_not_available_error_code)
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_GEOFENCES -> getString(R.string.too_many_geofences_error_code)
-            GeofenceStatusCodes.GEOFENCE_TOO_MANY_PENDING_INTENTS -> getString(R.string.too_many_pending_intents_error_code)
-            else -> {
-                getString(R.string.unknown_error_code)
-            }
-        }
-    }
 
     fun sendNotification(message: String) {
         Log.d(TAG, "sendNotification()" + message)

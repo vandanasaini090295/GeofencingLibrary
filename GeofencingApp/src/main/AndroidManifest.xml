@@ -13,11 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".UI.GeofenceActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <service android:name=".Services.GeofenceTransitionService" />
@@ -26,7 +21,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAdBaJexn9U_fIZTAe-Udk8FY_Ft_uUJRQ" />
 
-        <activity android:name=".UI.MainActivity"></activity>
     </application>
 
 </manifest>
