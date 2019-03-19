@@ -15,7 +15,7 @@ import com.google.android.gms.location.GeofencingEvent
 /**
  * This Service class handles the GeofenceEvent
  */
-abstract class GeofenceTransitionService : IntentService(GeofenceTransitionService::class.simpleName) {
+class GeofenceTransitionService : IntentService(GeofenceTransitionService::class.simpleName) {
 
     private val TAG = GeofenceTransitionService::class.java.simpleName
     private val GEOFENCE_NOTIFICATION_ID = 0
